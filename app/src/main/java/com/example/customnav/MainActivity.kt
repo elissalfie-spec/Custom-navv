@@ -96,15 +96,14 @@ class MainActivity : Activity() {
             setPadding(0, 16, 0, 32)
         }
 
-        val actionBtn = Button(this).apply {
-            text = "Click Count: $counter"
-            setBackgroundColor(Color.parseColor("#BB86FC"))
-            setTextColor(Color.BLACK)
-            setPadding(32, 16, 32, 16)
-            setOnClickListener {
-                counter++
-                text = "Click Count: $counter"
-            }
+        val actionBtn = Button(this)
+        actionBtn.text = "Click Count: $counter"
+        actionBtn.setBackgroundColor(Color.parseColor("#BB86FC"))
+        actionBtn.setTextColor(Color.BLACK)
+        actionBtn.setPadding(32, 16, 32, 16)
+        actionBtn.setOnClickListener {
+            counter++
+            actionBtn.text = "Click Count: $counter"
         }
 
         container.addView(title)
@@ -149,14 +148,13 @@ class MainActivity : Activity() {
             gravity = Gravity.CENTER
         }
 
-        val resetBtn = Button(this).apply {
-            text = "Reset Counter"
-            setBackgroundColor(Color.parseColor("#CF6679"))
-            setTextColor(Color.WHITE)
-            setOnClickListener {
-                counter = 0
-                text = "Counter Reset!"
-            }
+        val resetBtn = Button(this)
+        resetBtn.text = "Reset Counter"
+        resetBtn.setBackgroundColor(Color.parseColor("#CF6679"))
+        resetBtn.setTextColor(Color.WHITE)
+        resetBtn.setOnClickListener {
+            counter = 0
+            resetBtn.text = "Counter Reset!"
         }
 
         container.addView(title)
