@@ -1,0 +1,149 @@
+package com.example.navapp.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.navapp.models.*
+
+@Composable
+fun SettingsScreen(
+    settings: MasterAppSettings,
+    onSettingsChanged: (MasterAppSettings) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.85f)
+            .background(Color(0xFF1E1E2C))
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Text("App Settings", fontSize = 22.sp, color = Color.White)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SettingsCategory("1. 🎨 UI & Customization") {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Accent Color", color = Color.White)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    listOf(Color(0xFFFF3D00), Color(0xFF2962FF), Color(0xFF00E676)).forEach { color ->
+                        Box(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .background(color)
+                                .clickable { onSettingsChanged(settings.copy(accentColor = color)) }
+                        )
+                    }
+                }
+            }
+            ToggleSetting("HUD Mirror Mode", settings.isHudModeEnabled) {
+                onSettingsChanged(settings.copy(isHudModeEnabled = it))
+            }
+        }
+
+        SettingsCategory("2. 🚜 Vehicle & Profile Engine") {
+            Text("Physical Restrictions Profile", color = Color.Gray, fontSize = 12.sp)
+            RestrictionProfile.values().forEach { profile ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onSettingsChanged(settings.copy(vehicleRestrictions = profile)) },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = settings.vehicleRestrictions == profile,
+                        onClick = { onSettingsChanged(settings.copy(vehicleRestrictions = profile)) }
+                    )
+                    Text(profile.label, color = Color.White)
+                }
+            }
+        }
+
+        SettingsCategory("3. 🗺️ Map Overlays & Live Data") {
+            ToggleSetting("Live Traffic Lines", settings.showLiveTraffic) {
+                onSettingsChanged(settings.copy(showLiveTraffic = it))
+            }
+            ToggleSetting("Accident & Crash Hotspots", settings.showAccidentHotspots) {
+                onSettingsChanged(settings.copy(showAccidentHotspots = it))
+            }
+            ToggleSetting("Live Weather Radar", settings.showWeatherRadar) {
+                onSettingsChanged(settings.copy(showWeatherRadar = it))
+            }
+            ToggleSetting("Speed Cameras & Traps", settings.showSpeedCameras) {
+                onSettingsChanged(settings.copy(showSpeedCameras = it))
+            }
+        }
+
+        SettingsCategory("4. 🔊 Voice & Sound Guidance") {
+            ToggleSetting("Audio Ducking (Lower Music)", settings.audioDuckingEnabled) {
+                onSettingsChanged(settings.copy(audioDuckingEnabled = it))
+            }
+            ToggleSetting("Avatar Sound Effects", settings.avatarSoundPackEnabled) {
+                onSettingsChanged(settings.copy(avatarSoundPackEnabled = it))
+            }
+        }
+
+        SettingsCategory("5. ⚠️ Driver Safety & Radar Alerts") {
+            ToggleSetting("AI Windshield Sign-Guard", settings.isAiSignGuardEnabled) {
+                onSettingsChanged(settings.copy(isAiSignGuardEnabled = it))
+            }
+            Text("Speed Limit Warning Threshold: +${settings.speedLimitWarningMph} MPH", color = Color.White)
+            Slider(
+                value = settings.speedLimitWarningMph.toFloat(),
+                onValueChange = { onSettingsChanged(settings.copy(speedLimitWarningMph = it.toInt())) },
+                valueRange = 0f..15f
+            )
+        }
+
+        SettingsCategory("6. 📱 Lockscreen & Display") {
+            ToggleSetting("Show Map Over Lockscreen", settings.showOnLockscreen) {
+                onSettingsChanged(settings.copy(showOnLockscreen = it))
+            }
+            ToggleSetting("Keep Screen Awake", settings.keepScreenAwake) {
+                onSettingsChanged(settings.copy(keepScreenAwake = it))
+            }
+        }
+
+        SettingsCategory("7. 🎵 Media Integration") {
+            ToggleSetting("Show Spotify / Media Widget", settings.showMusicWidget) {
+                onSettingsChanged(settings.copy(showMusicWidget = it))
+            }
+        }
+    }
+}
+
+@Composable
+fun SettingsCategory(title: String, content: @Composable ColumnScope.() -> Unit) {
+    Column(modifier = Modifier.padding(vertical = 12.dp)) {
+        Text(title, color = Color(0xFFFFD600), fontSize = 14.sp)
+        Spacer(modifier = Modifier.height(8.dp))
+        content()
+        HorizontalDivider(color = Color.DarkGray, modifier = Modifier.padding(top = 12.dp))
+    }
+}
+
+@Composable
+fun ToggleSetting(label: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(label, color = Color.White)
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
+    }
+}
