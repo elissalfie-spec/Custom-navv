@@ -129,7 +129,7 @@ class MainActivity : Activity() {
             setTextColor(Color.WHITE)
             gravity = Gravity.CENTER
             setPadding(0, 24, 0, 0)
-            lineSpacingExtra = 12f
+            setLineSpacing(12f, 1f)
         }
 
         container.addView(title)
